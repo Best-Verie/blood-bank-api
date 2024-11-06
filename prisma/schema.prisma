@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  passwordHash String
+  email        String         @unique
+  role         Role
+  bloodGroup   BloodGroup?
+  createdAt    DateTime       @default(now())
+  appointments Appointment[]
+  Notification Notification[]
+}
+
+model DonationEvent {
+  id               Int           @id @default(autoincrement())
+  title            String
+  description      String?
+  eventDate        DateTime
+  location         String
+  bloodstockNeeded Int
+  createdAt        DateTime      @default(now())
+  appointments     Appointment[]
+}
+
+model Appointment {
+  id              Int           @id @default(autoincrement())
+  userId          Int
+  eventId         Int
+  appointmentDate DateTime
+  createdAt       DateTime      @default(now())
+  user            User          @relation(fields: [userId], references: [id])
+  event           DonationEvent @relation(fields: [eventId], references: [id])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  donor
+  admin
+}
+
+enum BloodGroup {
+  A_plus
+  A_minus
+  B_plus
+  B_minus
+  AB_plus
+  AB_minus
+  O_plus
+  O_minus
+}
