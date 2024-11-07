@@ -9,11 +9,12 @@ datasource db {
 
 model User {
   id           Int            @id @default(autoincrement())
-  username     String         @unique
   passwordHash String
   email        String         @unique
   role         Role
   bloodGroup   BloodGroup?
+  gender       Gender?
+  address      String
   createdAt    DateTime       @default(now())
   appointments Appointment[]
   Notification Notification[]
@@ -63,4 +64,10 @@ enum BloodGroup {
   AB_minus
   O_plus
   O_minus
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
 }
