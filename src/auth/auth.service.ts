@@ -79,7 +79,7 @@ export class AuthService {
     return this.createToken(user.id, user.email);
   }
 
-  createToken(userId: number, email: string) {
+  createToken(userId: string, email: string) {
     const payload = { sub: userId, email };
     return { access_token: this.jwtService.sign(payload) };
   }

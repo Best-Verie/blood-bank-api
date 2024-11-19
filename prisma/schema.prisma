@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
+  id          String     @id @default(uuid())
   passwordHash String
   email        String         @unique
   firstName     String
@@ -23,38 +23,55 @@ model User {
 }
 
 model DonationEvent {
-  id               Int           @id @default(autoincrement())
+  id           String     @id @default(uuid())
   title            String
   description      String?
+  hospitalId      String
   eventDate        DateTime
   location         String
   bloodstockNeeded Int
   createdAt        DateTime      @default(now())
   appointments     Appointment[]
+  hospital        Hospital @relation(fields: [hospitalId], references: [id])
+
 }
 
 model Appointment {
-  id              Int           @id @default(autoincrement())
-  userId          Int
-  eventId         Int
+  id          String     @id @default(uuid())
+  userId          String
+  eventId         String
   appointmentDate DateTime
   createdAt       DateTime      @default(now())
   user            User          @relation(fields: [userId], references: [id])
   event           DonationEvent @relation(fields: [eventId], references: [id])
+
 }
 
 model Notification {
-  id        Int      @id @default(autoincrement())
-  userId    Int
+  id          String     @id @default(uuid())
+  userId    String
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
 }
+model Hospital {
+  id          String     @id @default(uuid())
+  name        String
+  email       String  @unique
+  password    String
+  district    String
+  sector      String
+  description String
+  events  DonationEvent[]
+
+}
 
 enum Role {
   DONOR
   ADMIN
+  VOLUNTEER
+
 }
 
 enum BloodGroup {
