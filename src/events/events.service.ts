@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class EventsService {
-  constructor(readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
   async create(createEventDto: CreateEventDto) {
     return await this.prisma.donationEvent.create({
       data: {
