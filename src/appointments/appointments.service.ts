@@ -15,6 +15,7 @@ export class AppointmentsService {
           },
         },
         appointmentDate: createAppointmentDto.appointmentDate,
+        status: createAppointmentDto.status,
         user: {
           connect: {
             id: createAppointmentDto.userId,
@@ -66,6 +67,14 @@ export class AppointmentsService {
               id: updateAppointmentDto.eventId,
             },
           },
+        },
+      });
+    }
+    if (updateAppointmentDto.status) {
+      await this.prisma.appointment.update({
+        where: { id },
+        data: {
+          status: updateAppointmentDto.status,
         },
       });
     }

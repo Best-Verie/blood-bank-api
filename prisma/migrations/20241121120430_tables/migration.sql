@@ -1,17 +1,26 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('donor', 'admin');
+CREATE TYPE "Role" AS ENUM ('DONOR', 'ADMIN', 'VOLUNTEER');
 
 -- CreateEnum
 CREATE TYPE "BloodGroup" AS ENUM ('A_plus', 'A_minus', 'B_plus', 'B_minus', 'AB_plus', 'AB_minus', 'O_plus', 'O_minus');
 
+-- CreateEnum
+CREATE TYPE "Gender" AS ENUM ('MALE', 'FEMALE', 'OTHER');
+
+-- CreateEnum
+CREATE TYPE "AppointmentStatus" AS ENUM ('APPROVED', 'PENDING', 'REJECTED');
+
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
-    "username" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
     "role" "Role" NOT NULL,
     "bloodGroup" "BloodGroup",
+    "gender" "Gender",
+    "address" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -19,9 +28,10 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "DonationEvent" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
+    "hospitalId" TEXT NOT NULL,
     "eventDate" TIMESTAMP(3) NOT NULL,
     "location" TEXT NOT NULL,
     "bloodstockNeeded" INTEGER NOT NULL,
@@ -32,9 +42,10 @@ CREATE TABLE "DonationEvent" (
 
 -- CreateTable
 CREATE TABLE "Appointment" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "eventId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "eventId" TEXT NOT NULL,
+    "approved" BOOLEAN NOT NULL,
     "appointmentDate" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -43,8 +54,8 @@ CREATE TABLE "Appointment" (
 
 -- CreateTable
 CREATE TABLE "Notification" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "message" TEXT NOT NULL,
     "isRead" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -52,11 +63,27 @@ CREATE TABLE "Notification" (
     CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+-- CreateTable
+CREATE TABLE "Hospital" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "district" TEXT NOT NULL,
+    "sector" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+
+    CONSTRAINT "Hospital_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Hospital_email_key" ON "Hospital"("email");
+
+-- AddForeignKey
+ALTER TABLE "DonationEvent" ADD CONSTRAINT "DonationEvent_hospitalId_fkey" FOREIGN KEY ("hospitalId") REFERENCES "Hospital"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
