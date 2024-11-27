@@ -11,14 +11,14 @@ import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
-import { Prisma } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
+import { JwtPayload } from './jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
   async register(registerDto: RegisterDto) {
-    // Check if email already exists
     const existingUser = await this.prisma.user.findUnique({
       where: { email: registerDto.email },
     });
@@ -26,11 +26,9 @@ export class AuthService {
       throw new ConflictException('Email already in use');
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
 
     try {
-      // Create the new user in the database
       const user = await this.prisma.user.create({
         data: {
           email: registerDto.email,
@@ -61,12 +59,10 @@ export class AuthService {
       where: { email: loginDto.email },
     });
 
-    // Check if the user exists
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    // Check if the password is correct
     const passwordMatches = await bcrypt.compare(
       loginDto.password,
       user.passwordHash,
@@ -75,12 +71,65 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    // Generate and return a JWT token
     return this.createToken(user.id, user.email);
   }
 
   createToken(userId: string, email: string) {
     const payload = { sub: userId, email };
     return { access_token: this.jwtService.sign(payload) };
+  }
+
+  async getUsersByRole(role: Role) {
+    try {
+      const users = await this.prisma.user.findMany({
+        where: { role },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          gender: true,
+          bloodGroup: true,
+          address: true,
+          createdAt: true,
+        },
+      });
+      return users;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'An error occurred while fetching users by role',
+      );
+    }
+  }
+
+  async getLoggedInUser(token: string) {
+    try {
+      const payload = this.jwtService.verify<JwtPayload>(token, {
+        secret: '45uBldf89o_odb234',
+      });
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: payload.sub },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          gender: true,
+          bloodGroup: true,
+          address: true,
+          role: true,
+          createdAt: true,
+        },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
   }
 }
