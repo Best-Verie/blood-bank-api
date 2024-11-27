@@ -13,7 +13,6 @@ export class UsersService {
     return await this.prisma.user.findMany({});
   }
   async findByAllRole(role: Role) {
-    console.log('role', role);
     return await this.prisma.user.findMany({
       where: { role: role },
     });
