@@ -33,6 +33,14 @@ export class UsersService {
         },
       });
     }
+    if (updateUserDto.role) {
+      await this.prisma.user.update({
+        where: { id },
+        data: {
+          address: updateUserDto.role,
+        },
+      });
+    }
     if (updateUserDto.bloodGroup) {
       await this.prisma.user.update({
         where: { id },
