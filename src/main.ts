@@ -2,12 +2,17 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { RolesGuard } from './auth/roles.guard';
+import { Reflector } from '@nestjs/core';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable validation pipes globally
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalGuards(new RolesGuard(new Reflector()));
+
 
   // Enable CORS for all origins
   app.enableCors({
