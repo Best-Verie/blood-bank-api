@@ -11,7 +11,7 @@ export class EventsService {
       data: {
         title: createEventDto.title,
         description: createEventDto.description,
-        eventDate: createEventDto.description,
+        eventDate: createEventDto.eventDate,
         location: createEventDto.location,
         hospital: {
           connect: {
