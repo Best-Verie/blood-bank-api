@@ -5,7 +5,8 @@ import {
   Get,
   Query,
   UnauthorizedException,
-  Headers,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 
@@ -13,6 +14,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Role } from '@prisma/client';
+import { JwtAuthGuard } from './jwt.auth.guard';
 @ApiTags('auth') // This will add a "Auth" section in Swagger
 @Controller('auth')
 export class AuthController {
@@ -36,12 +38,9 @@ export class AuthController {
   }
 
   @Get('me')
-  async getLoggedInUser(@Headers('Authorization') authHeader: string) {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Authorization header not found');
-    }
-
-    const token = authHeader.split(' ')[1]; // Extract the token
-    return this.authService.getLoggedInUser(token);
+  @UseGuards(JwtAuthGuard)
+  async getLoggedInUser(@Request() req: any) {
+    console.log('Request User:', req.user); // Log user from token
+    return req.user; // Return token's user payload
   }
 }
