@@ -105,7 +105,7 @@ export class AuthService {
   async getLoggedInUser(token: string) {
     try {
       const payload = this.jwtService.verify<JwtPayload>(token, {
-        secret: '45uBldf89o_odb234',
+        secret: '!45uBldf89o_odb234',
       });
 
       const user = await this.prisma.user.findUnique({
