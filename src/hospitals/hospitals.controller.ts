@@ -3,21 +3,19 @@ import { HospitalsService } from './hospitals.service';
 import { CreateHospitalDto } from './dto/create-hospital.dto';
 import { UpdateHospitalDto } from './dto/update-hospital.dto';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { Roles } from 'src/auth/roles.decorator';
 
 @Controller('hospitals')
 export class HospitalsController {
   constructor(private readonly hospitalsService: HospitalsService) {}
-
- 
 
   @Get()
   findAll() {
     return this.hospitalsService.findAll();
   }
   @Post()
-  @ApiBody({type: CreateHospitalDto})
+  @ApiBody({ type: CreateHospitalDto })
   @ApiOperation({ summary: 'create a new hospital' })
-
   create(@Body() createHospitalDto: CreateHospitalDto) {
     return this.hospitalsService.create(createHospitalDto);
   }
@@ -27,8 +25,11 @@ export class HospitalsController {
   }
 
   @Patch(':id')
-  @ApiBody({type:UpdateHospitalDto})
-  update(@Param('id') id: string, @Body() updateHospitalDto: UpdateHospitalDto) {
+  @ApiBody({ type: UpdateHospitalDto })
+  update(
+    @Param('id') id: string,
+    @Body() updateHospitalDto: UpdateHospitalDto,
+  ) {
     return this.hospitalsService.update(id, updateHospitalDto);
   }
 
