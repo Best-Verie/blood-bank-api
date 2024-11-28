@@ -13,7 +13,6 @@ export class HospitalsController {
   findAll() {
     return this.hospitalsService.findAll();
   }
-  @Roles('ADMIN')
   @Post()
   @ApiBody({ type: CreateHospitalDto })
   @ApiOperation({ summary: 'create a new hospital' })
