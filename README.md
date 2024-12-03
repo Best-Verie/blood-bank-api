@@ -73,13 +73,87 @@ npm install
 ```
 ### Set Up Environment Variables
 
-## Create a .env file in the root directory with the following content:
+#### Create a .env file in the root directory with the following content:
 
 ```
 DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database_name>
 JWT_SECRET=<your-jwt-secret>
 ```
+## Running the App
+#### Database Setup with Prisma
 
+    Run Migrations:
+    Generate and migrate the database schema:
+
+```
+npx prisma migrate dev
+```
+
+#### Generate Prisma Client:
+
+    ```
+    npx prisma generate
+    ```
+
+#### Start the Server
+
+#### Development mode
+```
+npm run start:dev
+```
+
+#### Production mode
+```
+npm run start:prod
+```
+
+#### The API will be available at http://localhost:3000.
+API Documentation
+
+Access Swagger API documentation at:
+```
+http://localhost:3000/api
+```
+
+### API Documentation
+
+#### The API documentation is accessible via Swagger:
+```
+http://localhost:3000/api
+```
+
+Authentication Endpoints
+
+    POST /auth/register: Register a new user.
+    POST /auth/login: Log in a user.
+
+Hospital Endpoints
+
+    GET /hospitals: Retrieve all hospitals.
+    POST /hospitals: Add a new hospital.
+    PUT /hospitals/:id: Update hospital details.
+    DELETE /hospitals/:id: Delete a hospital.
+
+Donor Endpoints
+
+    GET /donors: Retrieve all donors.
+    POST /donors: Register a new donor.
+    PUT /donors/:id: Update donor details.
+    DELETE /donors/:id: Delete a donor.
+
+Appointment Endpoints
+
+    GET /appointments: Retrieve all appointments.
+    POST /appointments: Schedule a new appointment.
+    PUT /appointments/:id: Update appointment details.
+    DELETE /appointments/:id: Cancel an appointment.
+
+Event Endpoints
+
+    GET /events: Retrieve all events.
+    POST /events: Create a new event.
+    PUT /events/:id: Update event details.
+    DELETE /events/:id: Delete an event.
 
 
 
