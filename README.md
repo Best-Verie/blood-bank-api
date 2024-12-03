@@ -119,11 +119,3 @@ Event Endpoints
     DELETE /events/:id: Delete an event.
 
 
-
-Support
-
-For questions or contributions, feel free to open an issue or create a pull request.
-License
-
-This project is licensed under the MIT License.
-
