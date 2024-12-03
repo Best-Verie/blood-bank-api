@@ -79,48 +79,39 @@ npm install
 DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database_name>
 JWT_SECRET=<your-jwt-secret>
 ```
+
+Run database migrations
+Initialize the database schema and generate the Prisma client:
+
+```
+npx prisma migrate dev --name init
+npx prisma generate
+
+```
+
+
 ## Running the App
-#### Database Setup with Prisma
 
-    Run Migrations:
-    Generate and migrate the database schema:
+#### Start the development server
 
-```
-npx prisma migrate dev
-```
+npm run dev
 
-#### Generate Prisma Client:
+Access the API
+The application will run on:
 
-    ```
-    npx prisma generate
-    ```
+http://localhost:3000
 
-#### Start the Server
+View API Documentation
+Swagger documentation is available at:
 
-#### Development mode
-```
-npm run start:dev
-```
-
-#### Production mode
-```
-npm run start:prod
-```
-
-#### The API will be available at http://localhost:3000.
-API Documentation
-
-Access Swagger API documentation at:
-```
 http://localhost:3000/api
-```
 
-### API Documentation
+Access Prisma Studio
+Use Prisma Studio to inspect or modify database records:
 
-#### The API documentation is accessible via Swagger:
-```
-http://localhost:3000/api
-```
+npx prisma studio
+
+
 
 Authentication Endpoints
 
